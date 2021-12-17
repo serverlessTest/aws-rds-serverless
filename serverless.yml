@@ -1,0 +1,58 @@
+service: customersapi
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - ec2:CreateNetworkInterface
+        - ec2:DescribeNetworkInterfaces
+        - ec2:DeleteNetworkInterface
+      Resource:
+        - "*"
+functions:
+  GetCustomers:
+    handler: handler.getCustomers
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+  # create:
+  #   handler: create.createTables
+  #   events:
+  #     - http:
+  #         path: /new
+  #         method: get
+  #         cors: true
+    vpc:
+      securityGroupIds:
+        - sg-07a866ed16b22a75e
+      subnetIds:
+        - subnet-06186cb70a81a3c7d
+  create:
+    handler: insert.create
+    events:
+      - http:
+          path: /
+          method: post
+          cors: true
+    vpc:
+      securityGroupIds:
+        - sg-07a866ed16b22a75e
+      subnetIds:
+        - subnet-06186cb70a81a3c7d
+  update:
+    handler: edit.Update
+    events:
+      - http:
+          path: /edit/{id}
+          method: put
+          cors: true
+    vpc:
+      securityGroupIds:
+        - sg-07a866ed16b22a75e
+      subnetIds:
+        - subnet-06186cb70a81a3c7d
